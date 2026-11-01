@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Ensure window.fetch has both getter and setter so browser extensions can wrap it safely
+      (function() {
+        try {
+          var _origFetch = window.fetch;
+          var _currentFetch = _origFetch;
+          Object.defineProperty(window, 'fetch', {
+            configurable: true,
+            enumerable: true,
+            get: function() {
+              return _currentFetch || _origFetch;
+            },
+            set: function(fn) {
+              _currentFetch = fn;
+            }
+          });
+        } catch (e) {
+          try {
+            if (window.Window && window.Window.prototype) {
+              var _protoFetch = window.Window.prototype.fetch;
+              Object.defineProperty(window.Window.prototype, 'fetch', {
+                configurable: true,
+                enumerable: true,
+                get: function() {
+                  return _protoFetch;
+                },
+                set: function(fn) {
+                  _protoFetch = fn;
+                }
+              });
+            }
+          } catch (e2) {}
+        }
+
+        // Intercept and prevent extension-related runtime errors from halting the application
+        window.addEventListener('error', function(event) {
+          if (
+            (event.filename && event.filename.indexOf('chrome-extension://') !== -1) ||
+            (event.error && event.error.stack && event.error.stack.indexOf('chrome-extension://') !== -1) ||
+            (event.message && event.message.indexOf('fetch') !== -1 && event.message.indexOf('getter') !== -1)
+          ) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (
+            event.reason &&
+            event.reason.stack &&
+            event.reason.stack.indexOf('chrome-extension://') !== -1
+          ) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+          }
+        }, true);
+      })();
+    </script>
+    <title>Trộn Danh Sách &amp; Chia Nhóm Học Sinh</title>
+    <meta name="description" content="Ứng dụng trộn danh sách và chia nhóm học sinh ngẫu nhiên cho giáo viên. Nhập từ Excel, tùy chọn 5, 10, 15 học sinh/nhóm, xuất Word/Excel/PDF và lưu lịch sử." />
+    <meta property="og:title" content="Trộn Danh Sách &amp; Chia Nhóm Học Sinh" />
+    <meta property="og:description" content="Ứng dụng trộn danh sách và chia nhóm học sinh ngẫu nhiên cho giáo viên. Nhập từ Excel, tùy chọn 5, 10, 15 học sinh/nhóm, xuất Word/Excel/PDF và lưu lịch sử." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

@@ -1,0 +1,6 @@
+{
+  "name": "Trộn Danh Sách & Chia Nhóm Học Sinh",
+  "description": "Ứng dụng trộn danh sách và chia nhóm học sinh ngẫu nhiên cho giáo viên. Nhập từ Excel, tùy chọn 5, 10, 15 học sinh/nhóm, xuất Word/Excel/PDF và lưu lịch sử.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
